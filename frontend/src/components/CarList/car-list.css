@@ -1,3 +1,10 @@
+.car-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
 .car-card {
   background-color: white;
   border-radius: 12px;
