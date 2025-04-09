@@ -11,3 +11,11 @@ export interface Car {
   year: number;
   image: string;
 }
+
+export interface Review {
+  id: string;
+  name: string;
+  description: string;
+  rating: number;
+  date: string;
+}

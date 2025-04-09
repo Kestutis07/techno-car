@@ -1,31 +1,26 @@
-import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-import { Car } from '../../types/types';
 import './car-details.css';
+import { Car } from '../../types/types';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { API_URL } from '../../constants/global';
 
 export const CarDetails = () => {
   const navigate = useNavigate();
-  //  useParams yra HOOK kuris naudojamas gauti URL parametrus pvz id => :id
-  const { id } = useParams();
   const [car, setCar] = useState<Car | null>(null);
+  // useParams yra HOOK kuris naudojamas gauti URL parametrus pvz id => :id
+  const { id } = useParams();
 
-
- 
   useEffect(() => {
-    const fetchCars = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/api/cars');
-        setCars(response.data);
-      } catch (error) {
-        console.log(error);
-      }
+    const fetchCarDetails = async () => {
+      const response = await axios.get(`${API_URL}/cars/${id}`);
+      setCar(response.data);
     };
 
-    fetchCars();
+    fetchCarDetails();
   }, []);
 
-  const handleBackClick: = () => {
+  const handleBackClick = () => {
     navigate('/');
   };
 
@@ -40,8 +35,10 @@ export const CarDetails = () => {
         <div className="car-detail-right">
           {/* header */}
           <div className="car-header">
-            <h2>Audi a4</h2>
-            <p className="car-year">2023 m.</p>
+            <h2>
+              {car?.make} {car?.model}
+            </h2>
+            <p className="car-year">{car?.year} m.</p>
           </div>
           {/*  */}
           <div className="car-description">
@@ -49,29 +46,30 @@ export const CarDetails = () => {
           </div>
           <div className="car-specs">
             <div className="spec-item">
-              <span className="spec-label">Pavaru deze:</span>
-              <span className="spec-value">Automatine</span>
+              <span className="spec-label">Pavarų dėžė: </span>
+              <span className="spec-value">{car?.transmission}</span>
             </div>
             <div className="spec-item">
-              <span className="spec-label">Kuro tipas:</span>
-              <span className="spec-value">Benzinas</span>
+              <span className="spec-label">Kuro tipas: </span>
+              <span className="spec-value">{car?.fuelType}</span>
             </div>
             <div className="spec-item">
-              <span className="spec-label">Sedimu vietu:</span>
-              <span className="spec-value">5</span>
+              <span className="spec-label">Sėdimų vietų: </span>
+              <span className="spec-value">{car?.seats}</span>
             </div>
             <div className="spec-item">
-              <span className="spec-label">Kaina per diena:</span>
-              <span className="spec-value">$50</span>
+              <span className="spec-label">Kaina per dieną: </span>
+              <span className="spec-value">${car?.price}</span>
             </div>
-            <div className="car-actons">
-              <div className="spec-item">
-                <button className="button button-primaty">Rezervuoti</button>
-                <button className="button button-secondary">
-                  Grizti i pagrindini
-                </button>
-              </div>
-            </div>
+          </div>
+          <div className="car-actions">
+            <button className="button button-primary">Rezervuoti</button>
+            <button
+              className="button button-secondary"
+              onClick={handleBackClick}
+            >
+              Grįžti į pagrindinį
+            </button>
           </div>
         </div>
       </div>

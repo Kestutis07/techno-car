@@ -6,11 +6,14 @@ export const Navigation = () => {
     <nav className="navigation">
       <div className="navigation-container">
         <Link to="/" className="navigation-logo">
-          <span>TecnoCar.lt</span>
+          <span>TechnoCar.lt</span>
         </Link>
         <ul>
           <li>
             <Link to="/">Pagrindinis</Link>
+          </li>
+          <li>
+            <Link to="/reviews">Atsiliepimai</Link>
           </li>
         </ul>
       </div>

@@ -5,11 +5,11 @@
     "model": "Corolla",
     "description": "Patikimas ir ekonomiskas miesto automobilis",
     "price": 45,
-    "features": ["Klimato kontrole", "Navigacija", "Elektra valdomi langai"],
-    "transmission": "Automatine",
+    "features": ["Klimato kontrolė", "Navigacija", "Elektra valdomi langai"],
+    "transmission": "Automatinė",
     "fuelType": "Benzinas",
     "seats": 5,
-    "yeare": 2022,
+    "year": 2022,
     "image": "https://images.unsplash.com/photo-1550355291-bbee04a92027?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1976&q=80"
   },
   {
@@ -22,7 +22,51 @@
     "transmission": "Automatine",
     "fuelType": "Benzinas",
     "seats": 2,
-    "yeare": 2021,
+    "year": 2021,
     "image": "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+  },
+  {
+    "id": "3",
+    "make": "BMW",
+    "model": "320",
+    "description": "Prabangus ir sportiškas automobilis su puikiu valdymu ir modernia technologija. Idealus tiek verslo, tiek šeimos kelionėms.",
+    "price": 75,
+    "features": [
+      "Klimato valdymas",
+      "Navigacija",
+      "Parkavimo kameros",
+      "Bluetooth",
+      "Elektra valdomi langai",
+      "Centrinis užraktas",
+      "Sportinė pakaba",
+      "LED žibintai"
+    ],
+    "transmission": "Automatinė",
+    "image": "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    "fuelType": "Benzinas",
+    "seats": 5,
+    "year": 2023
+  },
+  {
+    "id": "4",
+    "make": "Mercedes",
+    "model": "Citan",
+    "description": "Prabangus ir sportiškas automobilis su puikiu valdymu ir modernia technologija. Idealus tiek verslo, tiek šeimos kelionėms.",
+    "price": 75,
+    "features": [
+      "Klimato valdymas",
+      "Navigacija",
+      "Parkavimo kameros",
+      "Bluetooth",
+      "Elektra valdomi langai",
+      "Centrinis užraktas",
+      "Sportinė pakaba",
+      "LED žibintai"
+    ],
+    "transmission": "Automatinė",
+    "image": "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    "fuelType": "Benzinas",
+    "seats": 5,
+    "year": 2020
   }
 ]

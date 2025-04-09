@@ -1,10 +1,10 @@
-// carRoutes.js - API marsrutai, kurie tvarko uzklausas, susijusias su automobiliais/cars
+// carRoutes.js - API maršrutai, kurie tvarko užklausas, susijusias su automobiliais/cars
 const express = require('express');
-const { getCars } = require('../controllers/carController');
-// Nurodome kad naudosime Express router'i kuris nukreips API requestus i atitinkama controller'i
+const { getCars, getCarById } = require('../controllers/carController');
+// Nurodom kad naudosim Express router'i kuris nukreips API requestus i atitinkama controller'i
 const router = express.Router();
 
 router.get('/', getCars);
-// router.get('/:id', getCarId);
+router.get('/:id', getCarById);
 
 module.exports = router;

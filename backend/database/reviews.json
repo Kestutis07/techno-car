@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "name": "Agne Agniauskiene",
+    "description": "Man labai nepatiko techocar.lt! nerekomenduociau!",
+    "rating": 1,
+    "date": "2023-10-01"
+  },
+  {
+    "id": "2",
+    "name": "Tomas Tomauskas",
+    "description": "Man labai patinka techocar.lt! rekomenduociau!",
+    "rating": 5,
+    "date": "2024-12-01"
+  },
+  {
+    "id": "6ecac6b2-9bbd-41db-93a7-1f89cb492ba3",
+    "name": "Edgaras S",
+    "rating": 5,
+    "description": "Man patiko platforma!",
+    "date": "2025-04-07T18:08:15.010Z"
+  }
+]
