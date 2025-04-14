@@ -10,16 +10,16 @@ export const ReviewsList = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/reviews`);
-        setReviews(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/reviews`);
+      setReviews(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  useEffect(() => {
     fetchReviews();
   }, []);
 
@@ -41,7 +41,10 @@ export const ReviewsList = () => {
         ))}
       </div>
       {isModalVisible && (
-        <ReviewModal onModalClose={() => setIsModalVisible(false)} />
+        <ReviewModal
+          onModalClose={() => setIsModalVisible(false)}
+          onSuccess={fetchReviews}
+        />
       )}
     </>
   );
