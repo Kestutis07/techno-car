@@ -34,7 +34,7 @@ export const CarList = () => {
         </div>
         <div className="car-list">
           {cars.map((car) => (
-            <CarCard key={car.id} car={car} />
+            <CarCard key={car._id} car={car} />
           ))}
         </div>
       </div>

@@ -37,7 +37,7 @@ export const ReviewsList = () => {
       </div>
       <div className="reviews-list">
         {reviews.map((review) => (
-          <ReviewCard key={review.id} review={review} />
+          <ReviewCard key={review._id} review={review} />
         ))}
       </div>
       {isModalVisible && (

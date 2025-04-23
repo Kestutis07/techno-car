@@ -11,7 +11,7 @@ export const CarCard = ({ car }: CarCardProps) => {
 
   const handleClick = () => {
     // navigate - nuveda i kita puslapi jo neperkraunant
-    navigate(`/cars/${car.id}`);
+    navigate(`/cars/${car._id}`);
   };
 
   return (

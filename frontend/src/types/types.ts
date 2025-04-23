@@ -1,5 +1,5 @@
 export interface Car {
-  id: string;
+  _id: string;
   make: string;
   model: string;
   description: string;
@@ -13,9 +13,9 @@ export interface Car {
 }
 
 export interface Review {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   rating: number;
-  date: string;
+  createdAt: string;
 }
