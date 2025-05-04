@@ -84,23 +84,7 @@ exports.login = async (req, res) => {
 
 exports.getCurrentUser = async (req, res) => {
   try {
-    // 1. issitraukiam tokena is request headerio
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    // 2. Tikriname ar tokenas egzistuoja
-    if (!token) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-    // 3. tikriname ar tokenas yra validus
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // 4. issitraukiam userio duomenis is duomenu bazes
-    const user = await User.findById(decoded.userId).select('-password');
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.json(user);
+    res.json(req.user);
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }

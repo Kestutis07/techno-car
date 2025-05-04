@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const carRoutes = require('./routes/carRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
 const authRoutes = require('./routes/authRoutes');
+const reservationRoutes = require('./routes/reservationRoutes');
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/api/cars', carRoutes);
 app.use('/api/reviews', reviewsRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/reservations', reservationRoutes);
 
 const PORT = process.env.PORT || 3001;
 

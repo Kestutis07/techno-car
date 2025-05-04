@@ -1,15 +1,20 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import './car-details.css';
 import { Car } from '../../types/types';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../constants/global';
+import { AuthContext } from '../../context/AuthContext';
+import { ReservationModal } from '../ReservationModal/ReservationModal';
 
 export const CarDetails = () => {
   const navigate = useNavigate();
   const [car, setCar] = useState<Car | null>(null);
   // useParams yra HOOK kuris naudojamas gauti URL parametrus pvz id => :id
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
+  const [isReservationModalVisible, setIsReservationModalVisible] =
+    useState(false);
 
   useEffect(() => {
     const fetchCarDetails = async () => {
@@ -22,6 +27,15 @@ export const CarDetails = () => {
 
   const handleBackClick = () => {
     navigate('/');
+  };
+
+  const handleReserveClick = () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    setIsReservationModalVisible(true);
   };
 
   return (
@@ -63,7 +77,12 @@ export const CarDetails = () => {
             </div>
           </div>
           <div className="car-actions">
-            <button className="button button-primary">Rezervuoti</button>
+            <button
+              className="button button-primary"
+              onClick={handleReserveClick}
+            >
+              Rezervuoti
+            </button>
             <button
               className="button button-secondary"
               onClick={handleBackClick}
@@ -73,6 +92,13 @@ export const CarDetails = () => {
           </div>
         </div>
       </div>
+      {isReservationModalVisible && car && (
+        <ReservationModal
+          onModalClose={() => setIsReservationModalVisible(false)}
+          onSuccess={() => setIsReservationModalVisible(false)}
+          car={car}
+        />
+      )}
     </div>
   );
 };
