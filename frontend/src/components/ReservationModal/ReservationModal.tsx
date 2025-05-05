@@ -1,6 +1,7 @@
 import './reservation-modal.css';
 import { Car } from '../../types/types';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface ReservationModalProps {
   onModalClose: () => void;
@@ -10,18 +11,30 @@ interface ReservationModalProps {
 
 export const ReservationModal: React.FC<ReservationModalProps> = ({
   onModalClose,
-  onSuccess,
   car,
 }) => {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate
   //   Gauname siandienos data
   const today = new Date().toISOString().split('T')[0];
+  const token = localStorage.getItem('access_token');
 
-  const handleFormSubmit = () => {
-    alert(1);
-  };
+  const handleFormSubmit = async(event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    }
+ 
+    // Skaiciuojame kiek dienu rezervuotas
+    const start = new Date(startDate);
+    const end = new Date(endDate)
 
   // apskaiciuojame totalPrice
   // kai keisis datos kaina bus perskaiciuojama automatiskai
@@ -61,7 +74,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
             <input
               type="date"
               id="endDate"
-              value={endtDate}
+              value={endDate}
               min={startDate || today}
               onChange={(e) => setEndDate(e.target.value)}
               required
@@ -78,6 +91,8 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
               </p>
             </div>
           </div>
+
+          {error && <div className='error-container'>{error}</div>}
 
           <div className="modal-action">
             <button type="button" onClick={onModalClose}>

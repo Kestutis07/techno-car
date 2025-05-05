@@ -95,7 +95,6 @@ export const CarDetails = () => {
       {isReservationModalVisible && car && (
         <ReservationModal
           onModalClose={() => setIsReservationModalVisible(false)}
-          onSuccess={() => setIsReservationModalVisible(false)}
           car={car}
         />
       )}
