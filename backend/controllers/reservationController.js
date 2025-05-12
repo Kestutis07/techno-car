@@ -1,29 +1,31 @@
+// ReservationController.js yra failas, kuris aprašo rezervacijų valdymo logiką.
 const Reservation = require('../models/reservationModel');
 const Car = require('../models/carModel');
 
-// sukuriam rezervacija
+// Sukuriam rezervaciją
 exports.createReservation = async (req, res) => {
   try {
     const { carId, totalDays, startDate, endDate } = req.body;
-
-    // 1. Patikrinam ar zmogus yra autentifikuotas
+    // we get user id from the request object which is set by the authMiddleware
     const userId = req.user._id;
+    // 1. only registered users can create reservations
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // 2. Patikrinam ar automobilis egzistuoja
+    // 2. car must be available for the selected dates
     const car = await Car.findById(carId);
     if (!car) {
       return res.status(404).json({ error: 'Car not found' });
     }
 
-    // 3. Patikrinam ar automobilis yra laisvas pasirinktomis dienomis
+    // 3. check if the car is available for the selected dates
     const isCarAvailable = await Reservation.findOne({
       carId,
-      // $expr - leidzia duoti salygas kurios yra sudetingesnes nei paprastos
+      // $expr is used to write mongo queries in javascript
+      // $or is used to check if the car is available for the selected dates
+      // $gte is used to check if the startDate is greater than or equal to the startDate of the reservation
       $expr: {
-        // $or - leidzia patikrini ar tokia ar kitokia diena yra laisva
         $or: [
           { $gte: ['$startDate', startDate] },
           { $gte: ['$endDate', endDate] },
@@ -34,13 +36,13 @@ exports.createReservation = async (req, res) => {
     if (isCarAvailable) {
       return res
         .status(400)
-        .json({ error: 'Automobilis užrezervuotas šiomis dienomis' });
+        .json({ error: 'Car is not available for the selected dates' });
     }
 
-    // 4. Paskaiciuojam kiek kainuos rezervacija
+    // 3. calculate total price based on the car's price per day
     const totalPrice = car.price * totalDays;
 
-    // 5. Sukuriam rezervacija
+    // 4. create reservation
     const reservation = new Reservation({
       carId,
       userId,
@@ -50,40 +52,54 @@ exports.createReservation = async (req, res) => {
     });
     await reservation.save();
 
-    res.status(201).json({ message: 'Reservation created successfully' });
+    // 5. return reservation details
+    res.status(201).json(reservation);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create reservation' });
   }
 };
 
-// Gaunam vartotojo rezervacijas
-exports.getUserReservations = async (req, res) => {
+exports.getReservations = async (req, res) => {
   try {
-    const userId = req.user._id;
-    const reservations = await Reservation.find({ userId })
-      .populate('carId', 'make model image')
+    const reservations = await Reservation.find({ userId: req.user._id })
+      // populate the carId field with the car details
+      .populate('carId', 'make model image price')
+      // lean() is used to return the raw data from the database
       .lean();
-    // lean - grazina paprastus JS objektus o ne Mongoose dokumentus
 
-    const formattedReservations = reservations.map((reservation) => ({
+    // Transform the response to include car details directly
+    const transformedReservations = reservations.map((reservation) => ({
       ...reservation,
       car: reservation.carId,
       carId: reservation.carId._id,
     }));
 
-    res.status(200).json(formattedReservations);
+    res.status(200).json(transformedReservations);
   } catch (error) {
     res.status(500).json({ error: 'Failed to get reservations' });
   }
 };
 
-// Deleting reservation
 exports.deleteReservation = async (req, res) => {
   try {
-    const reservationId = req.params.id;
-    await Reservation.findByIdAndDelete(reservationId);
+    const { id } = req.params;
+    await Reservation.findByIdAndDelete(id);
     res.status(200).json({ message: 'Reservation deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete reservation' });
   }
 };
+
+// ADMIN
+exports.getAllReservations = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res 
+      .status(403) 
+      .json({ error: 'Not authorized. Admin access requied' })
+    }
+
+    const getAllReservations = await Reservation.find()
+    .populate("carId")
+  }
+}

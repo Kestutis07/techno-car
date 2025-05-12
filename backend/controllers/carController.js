@@ -24,3 +24,23 @@ exports.getCarById = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch car' });
   }
 };
+
+// ADMIN ONLY
+exports.createCar = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res
+        .status(403)
+        .json({ error: 'No authorized. Admin access required' });
+    }
+
+    const newCar = new Car(req.body);
+    await newCar.save();
+
+    res.status(201).json({ message: 'Car created successfully' });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to create car',
+    });
+  }
+};

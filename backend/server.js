@@ -7,7 +7,6 @@ const carRoutes = require('./routes/carRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
 const authRoutes = require('./routes/authRoutes');
 const reservationRoutes = require('./routes/reservationRoutes');
-
 dotenv.config();
 
 const app = express();

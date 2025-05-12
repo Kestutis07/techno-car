@@ -10,7 +10,7 @@ exports.getReviews = async (req, res) => {
   }
 };
 
-exports.createReview = async (req, res) => {
+exports.createReview = (req, res) => {
   try {
     const { name, rating, description } = req.body;
 
@@ -24,8 +24,7 @@ exports.createReview = async (req, res) => {
       return res.status(400).json({ error: 'Rating must be between 1 and 5' });
     }
 
-    const newReview = new Review({ name, rating, description });
-    await newReview.save();
+    Review.createReview({ name, rating, description });
     res.status(201).json({ message: 'Review created successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });

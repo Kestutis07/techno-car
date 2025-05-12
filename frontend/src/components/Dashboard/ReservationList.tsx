@@ -1,4 +1,4 @@
-import { Reservation } from '../../../types/types';
+import { Reservation } from '../../types/types';
 import { ReservationItem } from './ReservationItem';
 
 interface ReservationListProps {

@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import './car-details.css';
 import { Car } from '../../types/types';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../constants/global';
 import { AuthContext } from '../../context/AuthContext';
@@ -9,12 +9,11 @@ import { ReservationModal } from '../ReservationModal/ReservationModal';
 
 export const CarDetails = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [car, setCar] = useState<Car | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   // useParams yra HOOK kuris naudojamas gauti URL parametrus pvz id => :id
   const { id } = useParams();
-  const { user } = useContext(AuthContext);
-  const [isReservationModalVisible, setIsReservationModalVisible] =
-    useState(false);
 
   useEffect(() => {
     const fetchCarDetails = async () => {
@@ -30,12 +29,13 @@ export const CarDetails = () => {
   };
 
   const handleReserveClick = () => {
+    // Check if user is authenticated
     if (!user) {
       navigate('/login');
       return;
     }
 
-    setIsReservationModalVisible(true);
+    setIsModalVisible(true);
   };
 
   return (
@@ -92,9 +92,10 @@ export const CarDetails = () => {
           </div>
         </div>
       </div>
-      {isReservationModalVisible && car && (
+      {isModalVisible && car && (
         <ReservationModal
-          onModalClose={() => setIsReservationModalVisible(false)}
+          onModalClose={() => setIsModalVisible(false)}
+          onSuccess={() => setIsModalVisible(false)}
           car={car}
         />
       )}

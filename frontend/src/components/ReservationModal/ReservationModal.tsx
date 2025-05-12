@@ -1,78 +1,82 @@
+import { useState, useEffect } from 'react';
 import './reservation-modal.css';
-import { Car } from '../../types/types';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../constants/global';
-import { useNavigate } from 'react-router-dom';
+import { Car } from '../../types/types';
 
 interface ReservationModalProps {
   onModalClose: () => void;
+  onSuccess: () => void;
   car: Car;
 }
 
 export const ReservationModal: React.FC<ReservationModalProps> = ({
   onModalClose,
+  onSuccess,
   car,
 }) => {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  const [totalPrice, setTotalPrice] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
-  // Gauname siandienos data
-  const today = new Date().toISOString().split('T')[0];
-  const token = localStorage.getItem('access_token');
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      // Calculate total price based on the selected dates
+      const start = new Date(startDate);
+      // new Date(endDate)
+      const end = new Date(endDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      setTotalPrice(diffDays * car.price);
+    }
+  }, [startDate, endDate, car.price]);
 
   const handleFormSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event?.preventDefault();
+
+    if (!startDate || !endDate) {
+      setError('Prašome pasirinkti datas');
+      return;
+    }
+
     try {
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
       };
 
-      // Skaiciuojam kiek dienu rezervuotis
+      // Calculate total days between start and end date
       const start = new Date(startDate);
       const end = new Date(endDate);
-      const differenceInDays = Math.ceil(
+      const diffDays = Math.ceil(
         (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
       );
 
       await axios.post(
         `${API_URL}/reservations`,
         {
-          totalDays: differenceInDays,
+          totalDays: diffDays,
           startDate: start.toISOString(),
           endDate: end.toISOString(),
           carId: car._id,
         },
         config
       );
+      onModalClose();
+      onSuccess();
       setError(null);
-      navigate('/dashboard');
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorMessage =
-          error.response?.data.error || 'Ivyko klaida rezervavimo metu';
+          error?.response?.data?.error || 'Ivyko klaida rezervavimo metu.';
         setError(errorMessage);
       }
     }
   };
 
-  // apskaiciuojame totalPrice
-  // kai keisis datos kaina bus perskaiciuojama automatiskai
-  useEffect(() => {
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const differenceInTime = Math.abs(end.getTime() - start.getTime());
-      const differenceInDays = Math.ceil(
-        differenceInTime / (1000 * 60 * 60 * 24)
-      );
-      setTotalPrice(differenceInDays * car.price);
-    }
-  }, [startDate, endDate]);
+  const today = new Date().toISOString().split('T')[0];
 
   return (
     <div className="modal-overlay">
@@ -82,7 +86,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
         </h2>
         <form onSubmit={handleFormSubmit}>
           <div className="form-group">
-            <label htmlFor="startDate">Pradžios data</label>
+            <label htmlFor="startDate">Pradžios data:</label>
             <input
               type="date"
               id="startDate"
@@ -94,12 +98,12 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
           </div>
 
           <div className="form-group">
-            <label htmlFor="endDate">Pabaigos data</label>
+            <label htmlFor="endDate">Pabaigos data:</label>
             <input
               type="date"
               id="endDate"
-              value={endDate}
               min={startDate || today}
+              value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               required
             />
@@ -108,10 +112,10 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
           <div className="booking-summary">
             <div className="price-info">
               <p>
-                Kaina per dieną: <strong>{car.price}€</strong>
+                Kaina per dieną: <strong>{car.price} €</strong>
               </p>
               <p className="total-price">
-                Bendra kaina: <strong>{totalPrice}€</strong>
+                Bendra kaina: <strong>{totalPrice} €</strong>
               </p>
             </div>
           </div>
@@ -122,7 +126,9 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
             <button type="button" onClick={onModalClose}>
               Atšaukti
             </button>
-            <button type="submit">Rezervuoti</button>
+            <button type="submit" disabled={!startDate || !endDate}>
+              Rezervuoti
+            </button>
           </div>
         </form>
       </div>
