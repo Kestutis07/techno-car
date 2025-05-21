@@ -1,29 +1,46 @@
-import { useState } from 'react';
-import { Car } from '../../types/types';
+import { useState, useEffect } from 'react';
+import { Car } from '../../../types/types';
+import './car-form-modal.css';
 
 interface CarFormModalProps {
   onModalClose: () => void;
-  onSubmit: (formData: Car) => void;
+  // Omit<Car, "_id"> is used to exclude the _id field from the form data
+  onSubmit: (formData: Omit<Car, '_id'>) => Promise<void>;
+  editCar: Car | null;
 }
 
-export const CarFormModal = ({ onModalClose, onSubmit }: CarFormModalProps) => {
+export const CarFormModal: React.FC<CarFormModalProps> = ({
+  onModalClose,
+  onSubmit,
+  editCar,
+}) => {
   const [make, setMake] = useState('');
   const [model, setModel] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState(0);
   const [features, setFeatures] = useState<string[]>([]);
-  const [transmission, setTransmission] = useState('manual');
-  const [fuelType, setFuelType] = useState('petrol');
+  const [transmission, setTransmission] = useState('');
+  const [fuelType, setFuelType] = useState('');
   const [seats, setSeats] = useState(0);
   const [year, setYear] = useState(0);
-  const [image, setImageUrl] = useState('');
+  const [image, setImage] = useState('');
 
-  const handleFeaturesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setFeatures(value.split(',').map((item) => item.trim()));
-  };
+  useEffect(() => {
+    if (editCar) {
+      setMake(editCar.make);
+      setModel(editCar.model);
+      setDescription(editCar.description);
+      setPrice(editCar.price);
+      setFeatures(editCar.features);
+      setTransmission(editCar.transmission);
+      setFuelType(editCar.fuelType);
+      setSeats(editCar.seats);
+      setYear(editCar.year);
+      setImage(editCar.image);
+    }
+  }, [editCar]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = {
       make,
@@ -37,114 +54,116 @@ export const CarFormModal = ({ onModalClose, onSubmit }: CarFormModalProps) => {
       year,
       image,
     };
+    await onSubmit(formData);
+  };
 
-    onSubmit(formData);
+  const handleFeaturesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const featuresString = e.target.value;
+    setFeatures(featuresString.split(',').map((item) => item.trim()));
   };
 
   return (
     <div className="modal">
       <div className="modal-content">
         <span className="close" onClick={onModalClose}>
-          x
+          &times;
         </span>
-        <h2>Add New Car</h2>
+        <h2>{editCar ? 'Edit Car' : 'Add New Car'}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Make:</label>
             <input
-              required
               value={make}
-              type="text"
               onChange={(e) => setMake(e.target.value)}
+              required
             />
           </div>
           <div className="form-group">
             <label>Model:</label>
             <input
-              required
               value={model}
-              type="text"
               onChange={(e) => setModel(e.target.value)}
+              required
             />
           </div>
           <div className="form-group">
             <label>Description:</label>
             <textarea
-              required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-            />
+              required
+            ></textarea>
           </div>
           <div className="form-group">
             <label>Price per day:</label>
             <input
-              required
-              value={price}
               type="number"
+              value={price}
               onChange={(e) => setPrice(Number(e.target.value))}
+              required
             />
           </div>
           <div className="form-group">
-            <label>Features (comma separated):</label>
+            <label>Features (comma-separated):</label>
             <input
-              required
               value={features.join(', ')}
-              type="text"
               onChange={handleFeaturesChange}
             />
           </div>
           <div className="form-group">
             <label>Transmission:</label>
             <select
-              required
               value={transmission}
               onChange={(e) => setTransmission(e.target.value)}
+              required
             >
-              <option value="manual">Manual</option>
-              <option value="automatic">Automatic</option>
+              <option value="">Select</option>
+              <option value="Automatic">Automatic</option>
+              <option value="Manual">Manual</option>
             </select>
           </div>
           <div className="form-group">
             <label>Fuel Type:</label>
             <select
-              required
               value={fuelType}
               onChange={(e) => setFuelType(e.target.value)}
+              required
             >
-              <option value="petrol">Petrol</option>
-              <option value="diesel">Diesel</option>
-              <option value="electric">Electric</option>
+              <option value="">Select</option>
+              <option value="Petrol">Petrol</option>
+              <option value="Diesel">Diesel</option>
+              <option value="Electric">Electric</option>
+              <option value="Hybrid">Hybrid</option>
             </select>
           </div>
           <div className="form-group">
             <label>Seats:</label>
             <input
-              required
-              value={seats}
               type="number"
+              value={seats}
               onChange={(e) => setSeats(Number(e.target.value))}
+              required
             />
           </div>
           <div className="form-group">
             <label>Year:</label>
             <input
-              required
-              value={year}
               type="number"
+              value={year}
               onChange={(e) => setYear(Number(e.target.value))}
+              required
             />
           </div>
           <div className="form-group">
             <label>Image URL:</label>
             <input
-              required
               value={image}
-              type="text"
-              onChange={(e) => setImageUrl(e.target.value)}
+              onChange={(e) => setImage(e.target.value)}
+              required
             />
           </div>
           <button type="submit" className="btn">
-            Add Car
+            {editCar ? 'Update Car' : 'Add Car'}
           </button>
         </form>
       </div>

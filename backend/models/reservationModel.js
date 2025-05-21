@@ -4,13 +4,12 @@ const reservationSchema = new mongoose.Schema(
   {
     carId: {
       type: mongoose.Schema.Types.ObjectId,
-      // ref to the Car model, to know which car was reserved
+      // ref - nurodo kokioje kolekcijoje yra automobilis kad galetume apjungti duomenis
       ref: 'Car',
       required: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      // ref to the User model, to know who made the reservation
       ref: 'User',
       required: true,
     },

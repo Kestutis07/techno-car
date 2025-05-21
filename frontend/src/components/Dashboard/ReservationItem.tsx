@@ -1,4 +1,4 @@
-import { Reservation } from '../../types/types';
+import { Reservation } from '../../../types/types';
 
 interface ReservationItemProps {
   reservation: Reservation;
@@ -11,7 +11,6 @@ export const ReservationItem = ({
   onDelete,
   isDeleting,
 }: ReservationItemProps) => {
-  // Format date for display
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString();

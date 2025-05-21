@@ -7,8 +7,10 @@ import { Reservation } from '../../types/types';
 import { AccountInfo } from './AccountInfo';
 import { ReservationList } from './ReservationList';
 import { AdminCarsTab } from './AdminCarsTab';
+import { AdminReservationsTab } from './AdminReservationsTab';
+import { AdminUsersTab } from '..//Dashboard/AdminUsersTab';
 
-type Tab = 'user' | 'admin-cars' | 'admin-reservations';
+type Tab = 'user' | 'admin-cars' | 'admin-reservations' | 'admin-users';
 
 export const Dashboard = () => {
   const { user, access_token } = useContext(AuthContext);
@@ -77,6 +79,7 @@ export const Dashboard = () => {
         <h1>Dashboard</h1>
         <p className="welcome-text">Welcome back, {user?.name}!</p>
       </div>
+
       {isAdmin && (
         <div className="tabs">
           <button
@@ -101,6 +104,14 @@ export const Dashboard = () => {
           >
             All Reservations
           </button>
+          <button
+            className={`tab-button ${
+              activeTab === 'admin-users' ? 'active' : ''
+            }`}
+            onClick={() => setActiveTab('admin-users')}
+          >
+            All Users
+          </button>
         </div>
       )}
 
@@ -116,12 +127,10 @@ export const Dashboard = () => {
             />
           </>
         )}
+
         {activeTab === 'admin-cars' && <AdminCarsTab />}
-        {activeTab === 'admin-reservations' && (
-          <>
-            <div>Admin reservations</div>
-          </>
-        )}
+        {activeTab === 'admin-reservations' && <AdminReservationsTab />}
+        {activeTab === 'admin-users' && <AdminUsersTab />}
       </div>
     </div>
   );

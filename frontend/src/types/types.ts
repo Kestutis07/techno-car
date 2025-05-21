@@ -1,5 +1,5 @@
 export interface Car {
-  _id?: string;
+  _id: string;
   make: string;
   model: string;
   description: string;
@@ -20,6 +20,15 @@ export interface Review {
   date: string;
 }
 
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: 'user' | 'admin';
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Reservation {
   _id: string;
   carId: string;
@@ -34,13 +43,19 @@ export interface Reservation {
     make: string;
     model: string;
     image: string;
-    price: number;
   };
 }
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
+export interface AdminReservation {
+  _id: string;
+  car: Car;
+  startDate: string;
+  endDate: string;
+  totalPrice: number;
+  createdAt: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+  };
 }

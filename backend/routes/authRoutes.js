@@ -2,9 +2,16 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middleware/authMiddleware');
+
 // Naujo naudotojo registracija
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.get('/user', authMiddleware, authController.getCurrentUser);
+router.get('/all-users', authMiddleware, authController.getAllUsers);
+router.put(
+  '/update-role/:userId',
+  authMiddleware,
+  authController.updateUserRole
+);
 
 module.exports = router;

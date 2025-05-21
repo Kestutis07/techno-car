@@ -1,17 +1,13 @@
 // ReservationRoutes.js yra failas, kuris aprašo maršrutus, susijusius su rezervacijomis.
-
 const express = require('express');
 const router = express.Router();
 const reservationController = require('../controllers/reservationController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// POST rezervacijos sukurimas
 router.post('/', authMiddleware, reservationController.createReservation);
-// GET user reservations
-router.get('/', authMiddleware, reservationController.getReservations);
-// DELETE reservation
+router.get('/', authMiddleware, reservationController.getUserReservations);
 router.delete('/:id', authMiddleware, reservationController.deleteReservation);
-// Get ALL reservations ADMIN ONLY
+// Admin route to get all reservations
 router.get('/all', authMiddleware, reservationController.getAllReservations);
 
 module.exports = router;

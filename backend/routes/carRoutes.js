@@ -7,7 +7,9 @@ const router = express.Router();
 
 router.get('/', carsController.getCars);
 router.get('/:id', carsController.getCarById);
+
+// Admin routes with authentication
 router.post('/', authMiddleware, carsController.createCar);
-router.patch('/', authMiddleware, carsController.updateCar);
-// router.delete('/:id', authMiddleware, carsController.updateCar);
+router.put('/:id', authMiddleware, carsController.updateCar);
+
 module.exports = router;

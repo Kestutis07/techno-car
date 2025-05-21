@@ -89,3 +89,33 @@ exports.getCurrentUser = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+exports.updateUserRole = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    const { userId } = req.params;
+    const { role } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { role },
+      { new: true }
+    );
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};

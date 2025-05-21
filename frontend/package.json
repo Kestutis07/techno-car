@@ -7,16 +7,30 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "jest"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.19",
     "@types/react-datepicker": "^6.2.0",
+    "@types/testing-library__jest-dom": "^5.14.9",
     "axios": "^1.8.4",
+    "babel-jest": "^29.7.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest-environment-jsdom": "^29.7.0",
     "jwt-decode": "^4.0.0",
     "react": "^19.0.0",
     "react-datepicker": "^8.3.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.4.1"
+    "react-router-dom": "^7.4.1",
+    "react-test-renderer": "^19.1.0",
+    "text-encoding": "^0.7.0",
+    "ts-jest": "^29.3.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

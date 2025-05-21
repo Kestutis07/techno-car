@@ -1,56 +1,74 @@
-import { useState, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../constants/global';
+import { AuthContext } from '../../context/AuthContext';
 import { Car } from '../../types/types';
 import { CarFormModal } from './CarFormModal';
 
 export const AdminCarsTab = () => {
+  const { access_token } = useContext(AuthContext);
   const [cars, setCars] = useState<Car[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editCar, setEditCar] = useState<Car | null>(null);
 
-  const fetchCars = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/cars`);
-      setCars(response.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await axios.get<Car[]>(`${API_URL}/cars`);
+        setCars(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching cars:', error);
+        setLoading(false);
+      }
+    };
 
-  const handleCarSubmit = async (formData: Car) => {
+    fetchCars();
+  }, []);
+
+  const handleSubmit = async (formData: Omit<Car, '_id'>) => {
     const config = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      },
+      headers: { Authorization: `Bearer ${access_token}` },
     };
 
     try {
-      await axios.post(`${API_URL}/cars`, formData, config);
-      setIsModalOpen(false);
-      fetchCars();
+      if (editCar) {
+        await axios.put(`${API_URL}/cars/${editCar._id}`, formData, config);
+        alert('Car updated successfully!');
+      } else {
+        await axios.post(`${API_URL}/cars`, formData, config);
+        alert('Car created successfully!');
+      }
+
+      // Refresh car list
+      const response = await axios.get<Car[]>(`${API_URL}/cars`);
+      setCars(response.data);
+
+      // Reset form
+      setShowForm(false);
+      setEditCar(null);
     } catch (error) {
-      console.log(error);
-      alert('Failed to create car');
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
     }
   };
 
-  useEffect(() => {
-    fetchCars();
-  }, []);
+  const handleEdit = (car: Car) => {
+    setEditCar(car);
+    setShowForm(true);
+  };
 
   return (
     <div className="admin-tab">
       <div className="admin-header">
         <h2>Car Management</h2>
-        <button className="btn" onClick={() => setIsModalOpen(true)}>
+        <button className="btn" onClick={() => setShowForm(true)}>
           Add New Car
         </button>
       </div>
 
-      {isLoading ? (
+      {loading ? (
         <p>Loading cars...</p>
       ) : (
         <table className="reservation-table">
@@ -60,7 +78,7 @@ export const AdminCarsTab = () => {
               <th>Make</th>
               <th>Model</th>
               <th>Year</th>
-              <th>Price/day</th>
+              <th>Price</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -73,9 +91,11 @@ export const AdminCarsTab = () => {
                 <td>{car.make}</td>
                 <td>{car.model}</td>
                 <td>{car.year}</td>
-                <td>{car.price}€</td>
+                <td>${car.price}/day</td>
                 <td>
-                  <button className="btn-edit">Edit</button>
+                  <button className="btn-edit" onClick={() => handleEdit(car)}>
+                    Edit
+                  </button>
                 </td>
               </tr>
             ))}
@@ -83,10 +103,14 @@ export const AdminCarsTab = () => {
         </table>
       )}
 
-      {isModalOpen && (
+      {showForm && (
         <CarFormModal
-          onModalClose={() => setIsModalOpen(false)}
-          onSubmit={handleCarSubmit}
+          onModalClose={() => {
+            setShowForm(false);
+            setEditCar(null);
+          }}
+          onSubmit={handleSubmit}
+          editCar={editCar}
         />
       )}
     </div>

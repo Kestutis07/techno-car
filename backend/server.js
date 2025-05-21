@@ -7,6 +7,7 @@ const carRoutes = require('./routes/carRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
 const authRoutes = require('./routes/authRoutes');
 const reservationRoutes = require('./routes/reservationRoutes');
+
 dotenv.config();
 
 const app = express();
@@ -20,7 +21,7 @@ app.use('/api/reviews', reviewsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/reservations', reservationRoutes);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 mongoose
   .connect(process.env.MONGO_URI)
